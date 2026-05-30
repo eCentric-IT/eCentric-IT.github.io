@@ -431,136 +431,6 @@
       margin-bottom: 14px;
     }
 
-    /* ─── Architecture Box ───────────────────────────────────────── */
-    .arch-box {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 28px;
-      margin-bottom: 24px;
-    }
-
-    .arch-columns {
-      display: grid;
-      grid-template-columns: 1fr auto 1fr;
-      gap: 16px;
-      align-items: center;
-    }
-
-    .arch-col {
-      background: rgba(255, 255, 255, .02);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      padding: 16px;
-    }
-
-    .arch-col-title {
-      font-family: var(--font-mono);
-      font-size: 10px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: .1em;
-      color: var(--muted);
-      margin-bottom: 12px;
-      padding-bottom: 8px;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .arch-row {
-      display: flex;
-      align-items: baseline;
-      gap: 8px;
-      margin-bottom: 8px;
-      font-family: var(--font-mono);
-      font-size: 12px;
-    }
-
-    .arch-key {
-      color: var(--cyan);
-      font-weight: 700;
-      white-space: nowrap;
-    }
-
-    .arch-desc {
-      color: var(--muted);
-      font-size: 11px;
-    }
-
-    .arch-arrow {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 4px;
-      color: var(--muted);
-      font-size: 20px;
-    }
-
-    .arch-arrow-label {
-      font-family: var(--font-mono);
-      font-size: 9px;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: .08em;
-    }
-
-    /* ─── Flow diagram ───────────────────────────────────────────── */
-    .flow-box {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-left: 3px solid var(--cyan);
-      border-radius: 6px;
-      padding: 20px 24px;
-      margin: 20px 0;
-    }
-
-    .flow-box .flow-title {
-      font-family: var(--font-mono);
-      font-size: 9px;
-      text-transform: uppercase;
-      letter-spacing: .12em;
-      color: var(--cyan);
-      margin-bottom: 12px;
-      font-weight: 700;
-    }
-
-    .flow-step {
-      display: flex;
-      align-items: flex-start;
-      gap: 12px;
-      padding: 8px 0;
-      border-bottom: 1px solid var(--border);
-      font-size: 13px;
-    }
-
-    .flow-step:last-child {
-      border-bottom: none;
-      padding-bottom: 0;
-    }
-
-    .flow-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: var(--cyan);
-      margin-top: 5px;
-      flex-shrink: 0;
-      box-shadow: 0 0 6px var(--cyan);
-    }
-
-    .flow-step-text {
-      color: #ccc;
-      line-height: 1.5;
-    }
-
-    .flow-step-text code {
-      font-family: var(--font-mono);
-      font-size: 11px;
-      color: var(--cyan);
-      background: var(--cyan-dim);
-      padding: 1px 5px;
-      border-radius: 3px;
-    }
-
     /* ─── Code Blocks ────────────────────────────────────────────── */
     .code-wrapper {
       position: relative;
@@ -713,116 +583,6 @@
       border: 1px solid rgba(167, 139, 250, .2);
     }
 
-    /* ─── Rule list ──────────────────────────────────────────────── */
-    .rule-list {
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      margin: 12px 0;
-    }
-
-    .rule-list li {
-      display: flex;
-      align-items: baseline;
-      gap: 10px;
-      font-size: 13px;
-      color: #aaa;
-      padding: 8px 12px;
-      background: rgba(255, 255, 255, .02);
-      border: 1px solid var(--border);
-      border-radius: 4px;
-    }
-
-    .rule-list li::before {
-      content: '→';
-      font-family: var(--font-mono);
-      color: var(--cyan);
-      font-weight: 700;
-      flex-shrink: 0;
-    }
-
-    .rule-list li code {
-      font-family: var(--font-mono);
-      font-size: 11px;
-      color: var(--cyan);
-      background: var(--cyan-dim);
-      padding: 1px 5px;
-      border-radius: 3px;
-    }
-
-    /* ─── 5-step Close pattern ───────────────────────────────────── */
-    .steps-numbered {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-      margin: 12px 0;
-      counter-reset: step;
-    }
-
-    .step-item {
-      display: flex;
-      gap: 14px;
-      padding: 10px 14px;
-      background: rgba(255, 255, 255, .015);
-      border: 1px solid var(--border);
-      border-radius: 4px;
-      align-items: flex-start;
-      font-size: 13px;
-      counter-increment: step;
-    }
-
-    .step-item::before {
-      content: counter(step);
-      font-family: var(--font-mono);
-      font-size: 10px;
-      font-weight: 800;
-      color: var(--cyan);
-      background: var(--cyan-dim);
-      border: 1px solid var(--border-c);
-      width: 20px;
-      height: 20px;
-      border-radius: 4px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-      margin-top: 1px;
-    }
-
-    .step-item-body {
-      color: #aaa;
-      line-height: 1.5;
-    }
-
-    .step-item-body strong {
-      color: #fff;
-    }
-
-    .step-item-body code {
-      font-family: var(--font-mono);
-      font-size: 11px;
-      color: var(--amber);
-      background: rgba(255, 179, 71, .08);
-      padding: 1px 5px;
-      border-radius: 3px;
-    }
-
-    .step-item-danger .step-item-body {
-      color: #ffaaaa;
-    }
-
-    .step-item-danger {
-      border-color: rgba(255, 92, 106, .2);
-      background: rgba(255, 92, 106, .03);
-    }
-
-    .step-item-danger::before {
-      color: var(--red);
-      background: rgba(255, 92, 106, .12);
-      border-color: rgba(255, 92, 106, .3);
-    }
-
     /* ─── Checklist ──────────────────────────────────────────────── */
     .checklist {
       display: flex;
@@ -895,88 +655,6 @@
       background: var(--cyan-dim);
       padding: 1px 5px;
       border-radius: 3px;
-    }
-
-    /* ─── Full-flow terminal box ─────────────────────────────────── */
-    .terminal-box {
-      background: #020204;
-      border: 1px solid rgba(255, 255, 255, .06);
-      border-radius: 8px;
-      overflow: hidden;
-      margin: 20px 0;
-    }
-
-    .terminal-header {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 10px 16px;
-      background: rgba(255, 255, 255, .025);
-      border-bottom: 1px solid var(--border);
-    }
-
-    .terminal-dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-    }
-
-    .terminal-dot:nth-child(1) {
-      background: #FF5F56;
-    }
-
-    .terminal-dot:nth-child(2) {
-      background: #FEBC2E;
-    }
-
-    .terminal-dot:nth-child(3) {
-      background: #27C93F;
-    }
-
-    .terminal-title {
-      font-family: var(--font-mono);
-      font-size: 10px;
-      color: var(--muted);
-      margin-left: 4px;
-    }
-
-    .terminal-body {
-      padding: 20px;
-      font-family: var(--font-mono);
-      font-size: 12px;
-      line-height: 1.8;
-      color: #888;
-      overflow-x: auto;
-    }
-
-    .t-sdk {
-      color: var(--cyan);
-    }
-
-    .t-api {
-      color: var(--amber);
-    }
-
-    .t-core {
-      color: var(--green);
-    }
-
-    .t-event {
-      color: var(--purple);
-    }
-
-    .t-arrow {
-      color: #444;
-    }
-
-    .t-indent {
-      display: inline-block;
-      width: 20px;
-    }
-
-    .t-comment {
-      color: #3a3a50;
-      font-style: italic;
     }
 
     /* ─── ABI table ──────────────────────────────────────────────── */
@@ -1074,14 +752,6 @@
         margin-left: 0;
         padding: 28px 20px 80px;
       }
-
-      .arch-columns {
-        grid-template-columns: 1fr;
-      }
-
-      .arch-arrow {
-        display: none;
-      }
     }
   </style>
 </head>
@@ -1114,46 +784,19 @@
         </span>
         Introduction
       </a>
-      <a class="nav-item" href="#architecture" onclick="setActive(this)">
-        <span class="nav-step-num">
-          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-            <rect x="3" y="3" width="7" height="7" />
-            <rect x="14" y="3" width="7" height="7" />
-            <rect x="14" y="14" width="7" height="7" />
-            <rect x="3" y="14" width="7" height="7" />
-          </svg>
-        </span>
-        Architecture
-      </a>
 
       <div class="nav-divider"></div>
       <div class="nav-section-label">Steps</div>
 
       <a class="nav-item" href="#step1" onclick="setActive(this)"><span class="nav-step-num">01</span>Define Events</a>
-      <a class="nav-item" href="#step2" onclick="setActive(this)"><span class="nav-step-num">02</span>SDK Interface &
-        Class</a>
-      <a class="nav-item" href="#step3" onclick="setActive(this)"><span class="nav-step-num">03</span>Protocol
-        Constants</a>
-      <a class="nav-item" href="#step4" onclick="setActive(this)"><span class="nav-step-num">04</span>SDK
-        Implementation</a>
+      <a class="nav-item" href="#step2" onclick="setActive(this)"><span class="nav-step-num">02</span>SDK Interface & Class</a>
+      <a class="nav-item" href="#step3" onclick="setActive(this)"><span class="nav-step-num">03</span>Protocol Constants</a>
+      <a class="nav-item" href="#step4" onclick="setActive(this)"><span class="nav-step-num">04</span>SDK Implementation</a>
       <a class="nav-item" href="#step5" onclick="setActive(this)"><span class="nav-step-num">05</span>SDK Factory</a>
-      <a class="nav-item" href="#step6" onclick="setActive(this)"><span class="nav-step-num">06</span>Register
-        Identifiers</a>
 
       <div class="nav-divider"></div>
       <div class="nav-section-label">Reference</div>
 
-      <a class="nav-item" href="#full-flow" onclick="setActive(this)">
-        <span class="nav-step-num">
-          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-            <polyline points="17 1 21 5 17 9" />
-            <path d="M3 11V9a4 4 0 0 1 4-4h14" />
-            <polyline points="7 23 3 19 7 15" />
-            <path d="M21 13v2a4 4 0 0 1-4 4H3" />
-          </svg>
-        </span>
-        Full Flow
-      </a>
       <a class="nav-item" href="#checklist" onclick="setActive(this)">
         <span class="nav-step-num">
           <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
@@ -1172,80 +815,15 @@
       <div class="doc-hero" id="overview">
         <div class="hero-tag">Extension Guide</div>
         <h1>eCentric SDK<br />Extension Guide</h1>
+        <p>Guia para criação de novos recursos no SDK, do ponto de vista do desenvolvedor consumidor.</p>
 
         <div class="hero-chips">
           <span class="chip chip-cyan">Object Pascal</span>
-          <span class="chip chip-amber">C ABI</span>
           <span class="chip chip-green">Thread-safe</span>
-          <span class="chip chip-cyan">RTTI Routing</span>
-          <span class="chip chip-amber">Async Events</span>
+          <span class="chip chip-cyan">Async Events</span>
+          <span class="chip chip-amber">C ABI</span>
         </div>
       </div>
-
-      <!-- Architecture -->
-      <section class="doc-section" id="architecture">
-        <div class="section-header">
-          <div class="step-badge step-badge-purple">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-              <rect x="3" y="3" width="7" height="7" />
-              <rect x="14" y="3" width="7" height="7" />
-              <rect x="14" y="14" width="7" height="7" />
-              <rect x="3" y="14" width="7" height="7" />
-            </svg>
-          </div>
-          <div class="section-title-group">
-            <h2>Arquitetura</h2>
-            <p class="section-sub">Os dois planos que se espelham: SDK e API</p>
-          </div>
-        </div>
-
-        <p>Cada recurso existe em dois planos que se espelham. O SDK é o que o desenvolvedor usa. A API é o que a DLL
-          expõe. A comunicação entre eles é feita exclusivamente pela ABI C.</p>
-
-        <div class="arch-box">
-          <div class="arch-columns">
-            <div class="arch-col">
-              <div class="arch-col-title" style="color:var(--cyan)">SDK — ecentric.sdk.pas</div>
-              <div class="arch-row"><span class="arch-key">IECFoo</span><span class="arch-desc">interface pública</span>
-              </div>
-              <div class="arch-row"><span class="arch-key">TECFoo</span><span class="arch-desc">implementação</span>
-              </div>
-              <div class="arch-row"><span class="arch-key">ec.Foo(...)</span><span class="arch-desc">ponto de
-                  entrada</span></div>
-            </div>
-            <div class="arch-arrow">
-              <span>⇄</span>
-              <span class="arch-arrow-label">C-ABI</span>
-            </div>
-            <div class="arch-col">
-              <div class="arch-row"><span class="arch-key" style="color:var(--amber)">Root.Foo</span><span
-                  class="arch-desc">método RTTI</span></div>
-            </div>
-          </div>
-        </div>
-
-        <div class="flow-box">
-          <div class="flow-title">Communication Path</div>
-          <div class="flow-step">
-            <div class="flow-dot"></div>
-            <div class="flow-step-text"><strong style="color:var(--cyan)">SDK</strong> —
-              <code>ec.Invoke(handle, 'Foo.Method', '{"param":"value"}')</code>
-            </div>
-          </div>
-          <div class="flow-step">
-            <div class="flow-dot" style="background:var(--amber);box-shadow:0 0 6px var(--amber)"></div>
-            <div class="flow-step-text"><strong style="color:var(--amber)">API</strong> —
-              <code>ec_CoreInvoke → RTTI → API Object Method → JSON</code>
-            </div>
-          </div>
-          <div class="flow-step">
-            <div class="flow-dot" style="background:var(--purple);box-shadow:0 0 6px var(--purple)"></div>
-            <div class="flow-step-text"><strong style="color:var(--purple)">Async Event</strong> —
-              <code>OnCoreEvent → GSDKObjects.TryGetValue → TECFoo.DoEvent</code>
-            </div>
-          </div>
-        </div>
-      </section>
 
       <!-- Step 1 -->
       <section class="doc-section" id="step1">
@@ -1253,21 +831,17 @@
           <div class="step-badge step-badge-cyan">01</div>
           <div class="section-title-group">
             <h2>Definir os Eventos</h2>
-            <p class="section-sub">Notificações assíncronas da API para o SDK — se houver</p>
+            <p class="section-sub">Notificações assíncronas do recurso</p>
           </div>
         </div>
 
-        <p>Eventos são notificações assíncronas da API para o SDK. São identificados por um inteiro único na faixa
-          reservada ao recurso.</p>
+        <p>Eventos são notificações assíncronas identificadas por um inteiro único na faixa reservada ao recurso. Declare-os em <code>ecentric.sdk.pas</code>.</p>
 
-        <div class="callout callout-warning">
-          <span class="callout-icon">⚡</span>
-          <div class="callout-body">Os dois arquivos devem estar sempre sincronizados. O comentário no arquivo de API
-            indica isso explicitamente.</div>
+        <div class="callout callout-info">
+          <span class="callout-icon">ℹ️</span>
+          <div class="callout-body"><strong>Nota:</strong> Cada recurso ocupa uma faixa contínua de 100 IDs. Processos usam 200–299, plugins 300–399. Escolha a próxima faixa livre para o seu recurso.</div>
         </div>
 
-
-        <h3>Em ecentric.sdk.pas</h3>
         <div class="code-wrapper">
           <div class="code-header">
             <span class="code-lang">Pascal — SDK</span>
@@ -1279,11 +853,10 @@
               Copy
             </button>
           </div>
-          <pre><code class="language-pascal">{ Process range (200..299) ...
-  Foo range (400..499): foo lifecycle events
-} EVT_FOO_READY     = 400;
-  EVT_FOO_DATA      = 401;
-  EVT_FOO_TERMINATE = 402;</code></pre>
+          <pre><code class="language-pascal">{ Foo range (400..499): foo lifecycle events
+} EVT_FOO_READY     = 400;  { Foo is ready — no payload }
+  EVT_FOO_DATA      = 401;  { Data received — payload is UTF-8 text }
+  EVT_FOO_TERMINATE = 402;  { Foo terminated — payload is exit code decimal }</code></pre>
         </div>
       </section>
 
@@ -1293,18 +866,22 @@
           <div class="step-badge step-badge-cyan">02</div>
           <div class="section-title-group">
             <h2>Interface e Classe no SDK</h2>
-            <p class="section-sub">Callbacks, IECFoo e TECFoo</p>
+            <p class="section-sub">Callbacks tipados, IECFoo e TECFoo</p>
           </div>
         </div>
 
-        <h3>2.1 Callbacks</h3>
+        <h3>2.1 — Callbacks tipados</h3>
         <div class="code-wrapper">
-          <div class="code-header"><span class="code-lang">Pascal — SDK</span><button class="code-copy-btn"
-              onclick="copyCode(this)"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                stroke-width="2">
+          <div class="code-header">
+            <span class="code-lang">Pascal — SDK Callbacks</span>
+            <button class="code-copy-btn" onclick="copyCode(this)">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <rect x="9" y="9" width="13" height="13" rx="2" />
                 <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
-              </svg>Copy</button></div>
+              </svg>
+              Copy
+            </button>
+          </div>
           <pre><code class="language-pascal">{ Callback for data received from a Foo object
 } TECOnFooData = Procedure(Const ASender: IECFoo; Const AData: String) Of Object;
 
@@ -1312,15 +889,19 @@
 } TECOnFooTerminate = Procedure(Const ASender: IECFoo; Const ACode: Integer) Of Object;</code></pre>
         </div>
 
-        <h3>2.2 Interface pública</h3>
+        <h3>2.2 — Interface pública</h3>
         <p>Herda de <code>IECObject</code>. Expõe apenas o que o desenvolvedor precisa ver.</p>
         <div class="code-wrapper">
-          <div class="code-header"><span class="code-lang">Pascal — SDK</span><button class="code-copy-btn"
-              onclick="copyCode(this)"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                stroke-width="2">
+          <div class="code-header">
+            <span class="code-lang">Pascal — SDK Interface</span>
+            <button class="code-copy-btn" onclick="copyCode(this)">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <rect x="9" y="9" width="13" height="13" rx="2" />
                 <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
-              </svg>Copy</button></div>
+              </svg>
+              Copy
+            </button>
+          </div>
           <pre><code class="language-pascal">{ Typed contract for a Foo resource
 } IECFoo = Interface(IECObject)
     ['{GUID-ÚNICO-GERADO-AQUI}']
@@ -1334,14 +915,18 @@
   End;</code></pre>
         </div>
 
-        <h3>2.3 Classe de implementação</h3>
+        <h3>2.3 — Classe de implementação</h3>
         <div class="code-wrapper">
-          <div class="code-header"><span class="code-lang">Pascal — SDK</span><button class="code-copy-btn"
-              onclick="copyCode(this)"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                stroke-width="2">
+          <div class="code-header">
+            <span class="code-lang">Pascal — SDK Class</span>
+            <button class="code-copy-btn" onclick="copyCode(this)">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <rect x="9" y="9" width="13" height="13" rx="2" />
                 <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
-              </svg>Copy</button></div>
+              </svg>
+              Copy
+            </button>
+          </div>
           <pre><code class="language-pascal">{ Typed wrapper for a native Foo resource
 } TECFoo = Class(TECObject, IECFoo)
   Strict Private
@@ -1364,14 +949,14 @@
       <!-- Step 3 -->
       <section class="doc-section" id="step3">
         <div class="section-header">
-          <div class="step-badge step-badge-amber">03</div>
+          <div class="step-badge step-badge-cyan">03</div>
           <div class="section-title-group">
             <h2>Constantes de Protocolo</h2>
             <p class="section-sub">Identificadores opacos da ABI — prefixo _EC_FOO_*</p>
           </div>
         </div>
 
-        <p>Nunca expostos na interface pública. A convenção de nomes da ABI é <code>Namespace.Método</code>.</p>
+        <p>Identificadores opacos da ABI — prefixo <code>_EC_FOO_*</code>. Nunca expostos na interface pública.</p>
 
         <table class="abi-table">
           <thead>
@@ -1405,16 +990,20 @@
         </table>
 
         <div class="code-wrapper">
-          <div class="code-header"><span class="code-lang">Pascal — SDK Constants</span><button class="code-copy-btn"
-              onclick="copyCode(this)"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                stroke-width="2">
+          <div class="code-header">
+            <span class="code-lang">Pascal — SDK Constants</span>
+            <button class="code-copy-btn" onclick="copyCode(this)">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <rect x="9" y="9" width="13" height="13" rx="2" />
                 <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
-              </svg>Copy</button></div>
+              </svg>
+              Copy
+            </button>
+          </div>
           <pre><code class="language-pascal">{ Foo
-} _EC_ROOT_FOO     = 'Root.Foo';       { factory — handle = 0 }
-  _EC_FOO_DO       = 'Foo.DoSomething';
-  _EC_FOO_CLOSE    = 'Foo.Close';</code></pre>
+} _EC_ROOT_FOO  = 'Root.Foo';        { factory — handle = 0 }
+  _EC_FOO_DO    = 'Foo.DoSomething';
+  _EC_FOO_CLOSE = 'Foo.Close';</code></pre>
         </div>
       </section>
 
@@ -1423,27 +1012,29 @@
         <div class="section-header">
           <div class="step-badge step-badge-cyan">04</div>
           <div class="section-title-group">
-            <h2>Implementar a Classe no SDK</h2>
+            <h2>Implementar DoEvent e Métodos</h2>
             <p class="section-sub">DoEvent, métodos de operação e late binding</p>
           </div>
         </div>
 
-        <h3>4.1 DoEvent — roteamento de eventos</h3>
+        <h3>4.1 — DoEvent — roteamento de eventos</h3>
 
-        <ul class="rule-list">
-          <li><code>SetString(LRaw, PAnsiChar(AData), ASize)</code> — sempre usar tamanho explícito, nunca strlen</li>
-          <li><code>UTF8ToString(LRaw)</code> — payload de texto é sempre UTF-8</li>
-          <li><code>Try..Except</code> vazio em volta do callback — nunca propagar exceções do consumidor</li>
-          <li><code>Else Inherited</code> — delegar eventos desconhecidos para a base</li>
-        </ul>
+        <div class="callout callout-warning">
+          <span class="callout-icon">⚠️</span>
+          <div class="callout-body"><strong>Atenção:</strong> Use sempre <code>SetString(LRaw, PAnsiChar(AData), ASize)</code> com tamanho explícito — nunca assuma terminação por nulo. Payload texto é sempre UTF-8. <code>Try..Except</code> vazio em volta do callback: nunca propague exceções do consumidor. <code>Else Inherited</code> delega eventos desconhecidos para a base.</div>
+        </div>
 
         <div class="code-wrapper">
-          <div class="code-header"><span class="code-lang">Pascal — SDK DoEvent</span><button class="code-copy-btn"
-              onclick="copyCode(this)"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                stroke-width="2">
+          <div class="code-header">
+            <span class="code-lang">Pascal — SDK DoEvent</span>
+            <button class="code-copy-btn" onclick="copyCode(this)">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <rect x="9" y="9" width="13" height="13" rx="2" />
                 <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
-              </svg>Copy</button></div>
+              </svg>
+              Copy
+            </button>
+          </div>
           <pre><code class="language-pascal">Procedure TECFoo.DoEvent(Const AEventID: Integer; Const AData: Pointer; Const ASize: Cardinal);
 Var
   LData: String;
@@ -1490,14 +1081,18 @@ Begin
 End;</code></pre>
         </div>
 
-        <h3>4.2 Métodos de operação</h3>
+        <h3>4.2 — Métodos de operação</h3>
         <div class="code-wrapper">
-          <div class="code-header"><span class="code-lang">Pascal — SDK Method</span><button class="code-copy-btn"
-              onclick="copyCode(this)"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                stroke-width="2">
+          <div class="code-header">
+            <span class="code-lang">Pascal — SDK Method</span>
+            <button class="code-copy-btn" onclick="copyCode(this)">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <rect x="9" y="9" width="13" height="13" rx="2" />
                 <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
-              </svg>Copy</button></div>
+              </svg>
+              Copy
+            </button>
+          </div>
           <pre><code class="language-pascal">Function TECFoo.DoSomething(Const AParam: String): Boolean;
 Var
   LRet: String;
@@ -1507,16 +1102,19 @@ Begin
 End;</code></pre>
         </div>
 
-        <h3>4.3 Late binding</h3>
-        <p>Aplicar quando eventos podem chegar durante o <code>Invoke</code> de criação — antes de o consumidor atribuir
-          os callbacks.</p>
+        <h3>4.3 — Late binding</h3>
+        <p>Aplique quando eventos podem chegar durante o <code>Invoke</code> de criação — antes de o consumidor atribuir os callbacks.</p>
         <div class="code-wrapper">
-          <div class="code-header"><span class="code-lang">Pascal — Late Binding</span><button class="code-copy-btn"
-              onclick="copyCode(this)"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                stroke-width="2">
+          <div class="code-header">
+            <span class="code-lang">Pascal — Late Binding</span>
+            <button class="code-copy-btn" onclick="copyCode(this)">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <rect x="9" y="9" width="13" height="13" rx="2" />
                 <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
-              </svg>Copy</button></div>
+              </svg>
+              Copy
+            </button>
+          </div>
           <pre><code class="language-pascal">Procedure TECFoo.SetOnData(Const ACallback: TECOnFooData);
 Begin
   FOnData := ACallback;
@@ -1544,14 +1142,18 @@ End;</code></pre>
           </div>
         </div>
 
-        <h3>5.1 AttachFoo</h3>
+        <h3>5.1 — AttachFoo</h3>
         <div class="code-wrapper">
-          <div class="code-header"><span class="code-lang">Pascal — SDK AttachFoo</span><button class="code-copy-btn"
-              onclick="copyCode(this)"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                stroke-width="2">
+          <div class="code-header">
+            <span class="code-lang">Pascal — SDK AttachFoo</span>
+            <button class="code-copy-btn" onclick="copyCode(this)">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <rect x="9" y="9" width="13" height="13" rx="2" />
                 <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
-              </svg>Copy</button></div>
+              </svg>
+              Copy
+            </button>
+          </div>
           <pre><code class="language-pascal">Function TECentric.AttachFoo(Const AHandle: Cardinal): IECFoo;
 Begin
   Result := Nil;
@@ -1562,14 +1164,18 @@ Begin
 End;</code></pre>
         </div>
 
-        <h3>5.2 Foo — caso simples</h3>
+        <h3>5.2 — Foo simples</h3>
         <div class="code-wrapper">
-          <div class="code-header"><span class="code-lang">Pascal — SDK Factory Simple</span><button
-              class="code-copy-btn" onclick="copyCode(this)"><svg width="10" height="10" viewBox="0 0 24 24" fill="none"
-                stroke="currentColor" stroke-width="2">
+          <div class="code-header">
+            <span class="code-lang">Pascal — SDK Factory Simple</span>
+            <button class="code-copy-btn" onclick="copyCode(this)">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <rect x="9" y="9" width="13" height="13" rx="2" />
                 <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
-              </svg>Copy</button></div>
+              </svg>
+              Copy
+            </button>
+          </div>
           <pre><code class="language-pascal">Function TECentric.Foo(Const AParam: String): IECFoo;
 Var
   LRet: String;
@@ -1586,14 +1192,22 @@ Begin
 End;</code></pre>
         </div>
 
-        <h3>5.3 Foo — com GSDKPending (eventos durante criação)</h3>
+        <h3>5.3 — Foo com GSDKPending (eventos durante criação)</h3>
+        <div class="callout callout-info">
+          <span class="callout-icon">ℹ️</span>
+          <div class="callout-body"><strong>Nota:</strong> Use esta variante quando eventos assíncronos podem chegar durante o <code>Invoke</code> de criação, antes de o handle ser conhecido. O objeto é pré-registrado no mapa pending indexado por <code>ThreadId</code>.</div>
+        </div>
         <div class="code-wrapper">
-          <div class="code-header"><span class="code-lang">Pascal — SDK Factory Pending</span><button
-              class="code-copy-btn" onclick="copyCode(this)"><svg width="10" height="10" viewBox="0 0 24 24" fill="none"
-                stroke="currentColor" stroke-width="2">
+          <div class="code-header">
+            <span class="code-lang">Pascal — SDK Factory Pending</span>
+            <button class="code-copy-btn" onclick="copyCode(this)">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <rect x="9" y="9" width="13" height="13" rx="2" />
                 <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
-              </svg>Copy</button></div>
+              </svg>
+              Copy
+            </button>
+          </div>
           <pre><code class="language-pascal">Function TECentric.Foo(Const AParam: String): IECFoo;
 Var
   LRet: String;
@@ -1620,7 +1234,7 @@ Begin
         GSDKPending.Remove(LThreadId);
      Finally
         TMonitor.Exit(GSDKLock);
-     End;
+      End;
   End;
   LHandle := ExtractHandle(LRet);
   If LHandle > 0 Then Begin
@@ -1629,119 +1243,6 @@ Begin
      Result := LFoo;
   End;
 End;</code></pre>
-        </div>
-      </section>
-
-      <!-- Step 6 -->
-      <section class="doc-section" id="step6">
-        <div class="section-header">
-          <div class="step-badge step-badge-green">06</div>
-          <div class="section-title-group">
-            <h2>Registrar Identificadores</h2>
-            <p class="section-sub">Convenção de nomes da ABI</p>
-          </div>
-        </div>
-
-        <table class="abi-table">
-          <thead>
-            <tr>
-              <th>Namespace</th>
-              <th>Handle</th>
-              <th>Destino</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><code>Root.*</code></td>
-              <td class="t-handle-zero">0</td>
-              <td>Chamadas ao <code>API Root Manager</code></td>
-            </tr>
-            <tr>
-              <td><code>Foo.*</code></td>
-              <td class="t-handle-n">N</td>
-              <td>Chamadas ao <code>API Instance Manager</code></td>
-            </tr>
-          </tbody>
-        </table>
-
-        <div class="callout callout-info">
-          <span class="callout-icon">ℹ️</span>
-          <div class="callout-body">O namespace é ignorado pelo roteador — apenas o método importa para o RTTI.</div>
-        </div>
-
-        <div class="code-wrapper">
-          <div class="code-header"><span class="code-lang">Pascal — SDK Protocol IDs</span><button class="code-copy-btn"
-              onclick="copyCode(this)"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                stroke-width="2">
-                <rect x="9" y="9" width="13" height="13" rx="2" />
-                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
-              </svg>Copy</button></div>
-          <pre><code class="language-pascal">{ Root
-} _EC_ROOT_FOO   = 'Root.Foo';
-
-{ Foo
-} _EC_FOO_DO     = 'Foo.DoSomething';</code></pre>
-        </div>
-      </section>
-
-      <!-- Full Flow -->
-      <section class="doc-section" id="full-flow">
-        <div class="section-header">
-          <div class="step-badge step-badge-purple">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-              <polyline points="17 1 21 5 17 9" />
-              <path d="M3 11V9a4 4 0 0 1 4-4h14" />
-              <polyline points="7 23 3 19 7 15" />
-              <path d="M21 13v2a4 4 0 0 1-4 4H3" />
-            </svg>
-          </div>
-          <div class="section-title-group">
-            <h2>Resumo do Fluxo Completo</h2>
-            <p class="section-sub">De ec.Foo() ao callback do consumidor</p>
-          </div>
-        </div>
-
-        <div class="terminal-box">
-          <div class="terminal-header">
-            <div class="terminal-dot"></div>
-            <div class="terminal-dot"></div>
-            <div class="terminal-dot"></div>
-            <span class="terminal-title">eCentric SDK — Full Call & Event Flow</span>
-          </div>
-          <div class="terminal-body">
-            <span class="t-comment">// ── Desenvolvedor ──────────────────────────────────────────</span>
-            <span class="t-sdk">LFoo</span> := <span class="t-sdk">ec.Foo</span>(<span class="t-sdk">'param'</span>);
-            <span class="t-sdk">LFoo.OnData</span> := <span class="t-sdk">MeuHandler</span>;
-            <span class="t-sdk">LFoo.DoSomething</span>(<span class="t-sdk">'valor'</span>);
-
-            <span class="t-comment">// ── SDK: ec.Foo() ───────────────────────────────────────────</span>
-            <span class="t-sdk">Invoke</span>(0, <span class="t-sdk">'Root.Foo'</span>, <span
-              class="t-sdk">'{"param":"param"}'</span>)
-            <t-indent class="t-arrow"> → </t-indent><span class="t-api">API DLL</span>: return <span
-              class="t-sdk">'{"handle":N,"type":"foo"}'</span>
-            <span class="t-sdk">ExtractHandle</span> <span class="t-arrow">→</span> N
-            <span class="t-sdk">TECFoo.Create</span>(N) <span class="t-arrow">→</span> <span
-              class="t-sdk">RegisterObject</span>(N, obj)
-            return <span class="t-sdk">IECFoo</span>
-
-            <span class="t-comment">// ── SDK: LFoo.DoSomething() ─────────────────────────────────</span>
-            <span class="t-sdk">Invoke</span>(N, <span class="t-sdk">'Foo.DoSomething'</span>, <span
-              class="t-sdk">'{"param":"valor"}'</span>)
-            <t-indent class="t-arrow"> → </t-indent><span class="t-api">API DLL</span>: return <span
-              class="t-sdk">'{"value":true}'</span>
-            <span class="t-sdk">ExtractBoolean</span> <span class="t-arrow">→</span> True
-
-            <span class="t-comment">// ── Core: evento assíncrono ─────────────────────────────────</span>
-            <span class="t-core">Core Event</span> <span class="t-arrow">→</span> <span
-              class="t-api">DispatchCoreEvent</span>(N, EVT_FOO_DATA, ...)
-            <t-indent class="t-arrow"> → </t-indent><span class="t-event">OnCoreEvent</span>
-            <t-indent class="t-arrow"> → </t-indent><span class="t-sdk">GSDKObjects</span>[N].<span
-              class="t-sdk">DoEvent</span>
-            <t-indent class="t-arrow"> → </t-indent><span class="t-sdk">TECFoo.DoEvent</span> <span
-              class="t-arrow">→</span> <span class="t-sdk">FOnData</span>(Self, AData)
-            <t-indent class="t-arrow"> → </t-indent><span class="t-sdk">MeuHandler</span>(LFoo, AData) <span
-              class="t-comment">✓</span>
-          </div>
         </div>
       </section>
 
@@ -1763,7 +1264,7 @@ End;</code></pre>
         <div class="checklist" id="checklist-items">
           <div class="check-item" onclick="toggleCheck(this)">
             <div class="check-box"></div>
-            <div class="check-label">Faixa de eventos definida e documentada nos dois arquivos</div>
+            <div class="check-label">Faixa de eventos definida e documentada em <code>ecentric.sdk.pas</code></div>
           </div>
           <div class="check-item" onclick="toggleCheck(this)">
             <div class="check-box"></div>
@@ -1771,9 +1272,11 @@ End;</code></pre>
           </div>
           <div class="check-item" onclick="toggleCheck(this)">
             <div class="check-box"></div>
-            <div class="check-label"><code>TECFoo.DoEvent</code> com <code>SetString + UTF8ToString</code>,
-              <code>Try..Except</code> vazio, <code>Else Inherited</code>
-            </div>
+            <div class="check-label">Callbacks <code>TECOnFoo*</code> declarados com assinatura correta</div>
+          </div>
+          <div class="check-item" onclick="toggleCheck(this)">
+            <div class="check-box"></div>
+            <div class="check-label"><code>TECFoo.DoEvent</code> com <code>SetString + UTF8ToString</code>, <code>Try..Except</code> vazio, <code>Else Inherited</code></div>
           </div>
           <div class="check-item" onclick="toggleCheck(this)">
             <div class="check-box"></div>
@@ -1781,20 +1284,15 @@ End;</code></pre>
           </div>
           <div class="check-item" onclick="toggleCheck(this)">
             <div class="check-box"></div>
-            <div class="check-label"><code>_EC_ROOT_FOO</code> e <code>_EC_FOO_*</code> declarados em
-              <code>ecentric.sdk.pas</code>
-            </div>
+            <div class="check-label"><code>_EC_ROOT_FOO</code> e <code>_EC_FOO_*</code> declarados em <code>ecentric.sdk.pas</code></div>
           </div>
           <div class="check-item" onclick="toggleCheck(this)">
             <div class="check-box"></div>
-            <div class="check-label"><code>TECentric.Foo</code> e <code>AttachFoo</code> declarados e implementados
-            </div>
+            <div class="check-label"><code>TECentric.Foo</code> e <code>AttachFoo</code> declarados e implementados</div>
           </div>
           <div class="check-item" onclick="toggleCheck(this)">
             <div class="check-box"></div>
-            <div class="check-label">Encoding: payload texto sempre <code>UTF8String</code> na API,
-              <code>UTF8ToString</code> no SDK
-            </div>
+            <div class="check-label">Encoding: payload texto sempre <code>UTF8ToString</code> no SDK</div>
           </div>
         </div>
 
@@ -1805,7 +1303,7 @@ End;</code></pre>
             </div>
           </div>
           <span id="progress-text"
-            style="font-family:var(--font-mono);font-size:11px;color:var(--muted);white-space:nowrap;">0 / 7</span>
+            style="font-family:var(--font-mono);font-size:11px;color:var(--muted);white-space:nowrap;">0 / 8</span>
         </div>
       </section>
 
@@ -1864,7 +1362,7 @@ End;</code></pre>
     }
 
     // ─── Interactive checklist ─────────────────────────────────────
-    const TOTAL = 7;
+    const TOTAL = 8;
 
     function toggleCheck(item) {
       const box = item.querySelector('.check-box');
