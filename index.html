@@ -1,0 +1,1757 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>eCentric SDK — Extension Guide</title>
+  <meta name="description" content="Complete guide for creating new resources in the eCentric SDK. Based on patterns established by TAPIProcess, TAPIPlugin, TAPILink, TAPIServer and TAPIClient." />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+
+  <!-- Prism.js — Pascal syntax highlight -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" />
+
+  <style>
+    /* ─── Reset & Tokens ─────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --cyan:        #33D8F2;
+      --cyan-dim:    rgba(51,216,242,.18);
+      --cyan-glow:   rgba(51,216,242,.08);
+      --amber:       #FFB347;
+      --green:       #00FF88;
+      --red:         #FF5C6A;
+      --purple:      #A78BFA;
+      --bg:          #050508;
+      --bg-card:     #0C0C10;
+      --bg-sidebar:  #08080C;
+      --border:      rgba(255,255,255,.07);
+      --border-c:    rgba(51,216,242,.2);
+      --text:        #E8E8F0;
+      --muted:       #666680;
+      --font-mono:   'JetBrains Mono', 'Fira Code', monospace;
+      --font-sans:   'Inter', system-ui, sans-serif;
+      --sidebar-w:   280px;
+      --header-h:    60px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font-sans);
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ─── Scrollbar ──────────────────────────────────────────────── */
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(255,255,255,.1); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--cyan-dim); }
+
+    /* ─── Top Header ─────────────────────────────────────────────── */
+    .site-header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: var(--header-h);
+      background: rgba(5,5,8,.92);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px 0 0;
+      z-index: 200;
+    }
+
+    .header-brand {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      width: var(--sidebar-w);
+      padding-left: 24px;
+      border-right: 1px solid var(--border);
+      height: 100%;
+    }
+
+    .brand-logo {
+      font-size: 18px;
+      font-weight: 900;
+      letter-spacing: -0.02em;
+      color: #fff;
+      text-decoration: none;
+    }
+    .brand-logo span { color: var(--cyan); }
+
+    .brand-badge {
+      margin-left: 10px;
+      font-family: var(--font-mono);
+      font-size: 9px;
+      font-weight: 700;
+      background: var(--cyan-dim);
+      border: 1px solid var(--border-c);
+      color: var(--cyan);
+      padding: 2px 7px;
+      border-radius: 3px;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+    }
+
+    .header-meta {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .header-meta a {
+      color: var(--muted);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: color .2s;
+    }
+    .header-meta a:hover { color: var(--cyan); }
+
+    .version-pill {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      background: rgba(167,139,250,.1);
+      border: 1px solid rgba(167,139,250,.25);
+      color: var(--purple);
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-weight: 600;
+    }
+
+    /* ─── Layout ─────────────────────────────────────────────────── */
+    .layout {
+      display: flex;
+      min-height: 100vh;
+      padding-top: var(--header-h);
+    }
+
+    /* ─── Sidebar ────────────────────────────────────────────────── */
+    .sidebar {
+      position: fixed;
+      top: var(--header-h);
+      left: 0;
+      width: var(--sidebar-w);
+      height: calc(100vh - var(--header-h));
+      overflow-y: auto;
+      background: var(--bg-sidebar);
+      border-right: 1px solid var(--border);
+      padding: 20px 0 40px;
+      flex-shrink: 0;
+    }
+
+    .nav-section-label {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      color: var(--muted);
+      padding: 16px 20px 6px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 20px;
+      font-size: 13px;
+      color: #999;
+      text-decoration: none;
+      cursor: pointer;
+      border-left: 2px solid transparent;
+      transition: all .15s;
+      position: relative;
+    }
+    .nav-item:hover { color: #fff; background: rgba(255,255,255,.02); }
+    .nav-item.active {
+      color: var(--cyan);
+      border-left-color: var(--cyan);
+      background: var(--cyan-glow);
+    }
+
+    .nav-step-num {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--muted);
+      background: rgba(255,255,255,.04);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      padding: 1px 5px;
+      min-width: 24px;
+      text-align: center;
+      flex-shrink: 0;
+    }
+    .nav-item.active .nav-step-num {
+      background: var(--cyan-dim);
+      border-color: var(--border-c);
+      color: var(--cyan);
+    }
+
+    .nav-divider {
+      height: 1px;
+      background: var(--border);
+      margin: 10px 20px;
+    }
+
+    /* ─── Main Content ───────────────────────────────────────────── */
+    .content {
+      margin-left: var(--sidebar-w);
+      flex: 1;
+      max-width: 900px;
+      padding: 48px 60px 100px;
+    }
+
+    /* ─── Hero ───────────────────────────────────────────────────── */
+    .doc-hero {
+      margin-bottom: 56px;
+      padding-bottom: 40px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .hero-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      color: var(--cyan);
+      background: var(--cyan-glow);
+      border: 1px solid var(--border-c);
+      padding: 5px 12px;
+      border-radius: 4px;
+      margin-bottom: 20px;
+    }
+    .hero-tag::before {
+      content: '';
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--cyan);
+      box-shadow: 0 0 8px var(--cyan);
+    }
+
+    .doc-hero h1 {
+      font-size: clamp(1.8rem, 3vw, 2.6rem);
+      font-weight: 900;
+      letter-spacing: -.03em;
+      line-height: 1.1;
+      background: linear-gradient(135deg, #fff 40%, rgba(255,255,255,.55));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 16px;
+    }
+
+    .doc-hero p {
+      font-size: 15px;
+      color: var(--muted);
+      max-width: 620px;
+      line-height: 1.7;
+    }
+
+    .hero-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 20px;
+    }
+
+    .chip {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 4px;
+      border: 1px solid;
+    }
+    .chip-cyan  { color: var(--cyan);   border-color: rgba(51,216,242,.3);  background: rgba(51,216,242,.05);  }
+    .chip-amber { color: var(--amber);  border-color: rgba(255,179,71,.3);   background: rgba(255,179,71,.05);  }
+    .chip-green { color: var(--green);  border-color: rgba(0,255,136,.3);   background: rgba(0,255,136,.05);   }
+
+    /* ─── Sections ───────────────────────────────────────────────── */
+    .doc-section {
+      margin-bottom: 72px;
+      scroll-margin-top: calc(var(--header-h) + 24px);
+    }
+
+    .section-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+
+    .step-badge {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 800;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .step-badge-cyan   { background: var(--cyan-dim);  border: 1px solid var(--border-c); color: var(--cyan); }
+    .step-badge-amber  { background: rgba(255,179,71,.12); border: 1px solid rgba(255,179,71,.3); color: var(--amber); }
+    .step-badge-purple { background: rgba(167,139,250,.1); border: 1px solid rgba(167,139,250,.25); color: var(--purple); }
+    .step-badge-green  { background: rgba(0,255,136,.08); border: 1px solid rgba(0,255,136,.25); color: var(--green); }
+
+    .section-title-group h2 {
+      font-size: 1.3rem;
+      font-weight: 800;
+      letter-spacing: -.02em;
+      color: #fff;
+      line-height: 1.2;
+    }
+
+    .section-title-group .section-sub {
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    .doc-section h3 {
+      font-size: 14px;
+      font-weight: 700;
+      color: #ccc;
+      margin: 32px 0 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .doc-section h3::before {
+      content: '';
+      display: inline-block;
+      width: 3px;
+      height: 14px;
+      background: var(--cyan);
+      border-radius: 2px;
+    }
+
+    .doc-section p {
+      font-size: 14px;
+      color: #aaa;
+      line-height: 1.75;
+      margin-bottom: 14px;
+    }
+
+    /* ─── Architecture Box ───────────────────────────────────────── */
+    .arch-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 28px;
+      margin-bottom: 24px;
+    }
+
+    .arch-columns {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .arch-col {
+      background: rgba(255,255,255,.02);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 16px;
+    }
+
+    .arch-col-title {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      color: var(--muted);
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .arch-row {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      margin-bottom: 8px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+    }
+
+    .arch-key { color: var(--cyan); font-weight: 700; white-space: nowrap; }
+    .arch-desc { color: var(--muted); font-size: 11px; }
+
+    .arch-arrow {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      color: var(--muted);
+      font-size: 20px;
+    }
+    .arch-arrow-label {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    /* ─── Flow diagram ───────────────────────────────────────────── */
+    .flow-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--cyan);
+      border-radius: 6px;
+      padding: 20px 24px;
+      margin: 20px 0;
+    }
+    .flow-box .flow-title {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      color: var(--cyan);
+      margin-bottom: 12px;
+      font-weight: 700;
+    }
+    .flow-step {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 13px;
+    }
+    .flow-step:last-child { border-bottom: none; padding-bottom: 0; }
+    .flow-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--cyan);
+      margin-top: 5px;
+      flex-shrink: 0;
+      box-shadow: 0 0 6px var(--cyan);
+    }
+    .flow-step-text { color: #ccc; line-height: 1.5; }
+    .flow-step-text code { font-family: var(--font-mono); font-size: 11px; color: var(--cyan); background: var(--cyan-dim); padding: 1px 5px; border-radius: 3px; }
+
+    /* ─── Code Blocks ────────────────────────────────────────────── */
+    .code-wrapper {
+      position: relative;
+      margin: 16px 0 20px;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,.07);
+    }
+
+    .code-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 16px;
+      background: rgba(255,255,255,.03);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .code-lang {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      color: var(--muted);
+    }
+
+    .code-copy-btn {
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-family: var(--font-mono);
+      font-size: 10px;
+      padding: 3px 10px;
+      border-radius: 3px;
+      cursor: pointer;
+      transition: all .2s;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .code-copy-btn:hover { border-color: var(--cyan); color: var(--cyan); }
+    .code-copy-btn.copied { border-color: var(--green); color: var(--green); }
+
+    .code-wrapper pre[class*="language-"] {
+      margin: 0 !important;
+      border-radius: 0 !important;
+      background: #0A0A0E !important;
+      padding: 20px !important;
+      font-size: 12.5px !important;
+      line-height: 1.65 !important;
+      font-family: var(--font-mono) !important;
+      max-height: 520px;
+      overflow-y: auto;
+    }
+
+    /* Pascal token overrides */
+    .token.keyword  { color: #C792EA !important; }
+    .token.comment  { color: #546E7A !important; font-style: italic !important; }
+    .token.string   { color: #C3E88D !important; }
+    .token.number   { color: #F78C6C !important; }
+    .token.function { color: var(--cyan) !important; }
+    .token.operator { color: #89DDFF !important; }
+    .token.class-name { color: var(--amber) !important; }
+    .token.punctuation { color: #89DDFF !important; }
+
+    /* ─── Callout boxes ──────────────────────────────────────────── */
+    .callout {
+      display: flex;
+      gap: 14px;
+      padding: 16px 18px;
+      border-radius: 6px;
+      margin: 16px 0;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+    .callout-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+    .callout-body { flex: 1; color: #bbb; }
+    .callout-body strong { color: #fff; }
+    .callout-body code {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      background: rgba(255,255,255,.07);
+      padding: 1px 5px;
+      border-radius: 3px;
+    }
+
+    .callout-info    { background: rgba(51,216,242,.06);  border: 1px solid rgba(51,216,242,.18);  }
+    .callout-warning { background: rgba(255,179,71,.06);  border: 1px solid rgba(255,179,71,.2);   }
+    .callout-danger  { background: rgba(255,92,106,.06);  border: 1px solid rgba(255,92,106,.2);   }
+    .callout-rule    { background: rgba(167,139,250,.06); border: 1px solid rgba(167,139,250,.2);  }
+
+    /* ─── Rule list ──────────────────────────────────────────────── */
+    .rule-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin: 12px 0;
+    }
+    .rule-list li {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      font-size: 13px;
+      color: #aaa;
+      padding: 8px 12px;
+      background: rgba(255,255,255,.02);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+    }
+    .rule-list li::before {
+      content: '→';
+      font-family: var(--font-mono);
+      color: var(--cyan);
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .rule-list li code {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--cyan);
+      background: var(--cyan-dim);
+      padding: 1px 5px;
+      border-radius: 3px;
+    }
+
+    /* ─── 5-step Close pattern ───────────────────────────────────── */
+    .steps-numbered {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      margin: 12px 0;
+      counter-reset: step;
+    }
+    .step-item {
+      display: flex;
+      gap: 14px;
+      padding: 10px 14px;
+      background: rgba(255,255,255,.015);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      align-items: flex-start;
+      font-size: 13px;
+      counter-increment: step;
+    }
+    .step-item::before {
+      content: counter(step);
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 800;
+      color: var(--cyan);
+      background: var(--cyan-dim);
+      border: 1px solid var(--border-c);
+      width: 20px;
+      height: 20px;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .step-item-body { color: #aaa; line-height: 1.5; }
+    .step-item-body strong { color: #fff; }
+    .step-item-body code {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--amber);
+      background: rgba(255,179,71,.08);
+      padding: 1px 5px;
+      border-radius: 3px;
+    }
+    .step-item-danger .step-item-body { color: #ffaaaa; }
+    .step-item-danger { border-color: rgba(255,92,106,.2); background: rgba(255,92,106,.03); }
+    .step-item-danger::before { color: var(--red); background: rgba(255,92,106,.12); border-color: rgba(255,92,106,.3); }
+
+    /* ─── Checklist ──────────────────────────────────────────────── */
+    .checklist {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin: 16px 0;
+    }
+    .check-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 10px 14px;
+      background: rgba(255,255,255,.015);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      font-size: 13px;
+      color: #aaa;
+      transition: background .15s;
+      cursor: default;
+    }
+    .check-item:hover { background: rgba(255,255,255,.03); }
+
+    .check-box {
+      width: 16px; height: 16px;
+      border: 1.5px solid var(--border-c);
+      border-radius: 3px;
+      flex-shrink: 0;
+      margin-top: 2px;
+      transition: all .2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+    .check-box.checked {
+      background: var(--cyan);
+      border-color: var(--cyan);
+    }
+    .check-box.checked::after {
+      content: '✓';
+      font-size: 10px;
+      color: #050508;
+      font-weight: 800;
+    }
+    .check-item.checked-row { opacity: .55; }
+    .check-item.checked-row .check-label { text-decoration: line-through; }
+    .check-label { flex: 1; line-height: 1.4; }
+    .check-label code {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--cyan);
+      background: var(--cyan-dim);
+      padding: 1px 5px;
+      border-radius: 3px;
+    }
+
+    /* ─── Full-flow terminal box ─────────────────────────────────── */
+    .terminal-box {
+      background: #020204;
+      border: 1px solid rgba(255,255,255,.06);
+      border-radius: 8px;
+      overflow: hidden;
+      margin: 20px 0;
+    }
+    .terminal-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 16px;
+      background: rgba(255,255,255,.025);
+      border-bottom: 1px solid var(--border);
+    }
+    .terminal-dot { width: 10px; height: 10px; border-radius: 50%; }
+    .terminal-dot:nth-child(1) { background: #FF5F56; }
+    .terminal-dot:nth-child(2) { background: #FEBC2E; }
+    .terminal-dot:nth-child(3) { background: #27C93F; }
+    .terminal-title { font-family: var(--font-mono); font-size: 10px; color: var(--muted); margin-left: 4px; }
+    .terminal-body {
+      padding: 20px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      line-height: 1.8;
+      color: #888;
+      overflow-x: auto;
+    }
+    .t-sdk    { color: var(--cyan); }
+    .t-api    { color: var(--amber); }
+    .t-core   { color: var(--green); }
+    .t-event  { color: var(--purple); }
+    .t-arrow  { color: #444; }
+    .t-indent { display: inline-block; width: 20px; }
+    .t-comment { color: #3a3a50; font-style: italic; }
+
+    /* ─── ABI table ──────────────────────────────────────────────── */
+    .abi-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12.5px;
+      margin: 16px 0;
+    }
+    .abi-table th {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      color: var(--muted);
+      font-weight: 700;
+      padding: 8px 14px;
+      border-bottom: 1px solid rgba(255,179,71,.2);
+      text-align: left;
+    }
+    .abi-table td {
+      padding: 9px 14px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+      color: #aaa;
+    }
+    .abi-table tbody tr:hover td { background: rgba(255,255,255,.015); }
+    .abi-table code {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--cyan);
+      background: var(--cyan-dim);
+      padding: 1px 6px;
+      border-radius: 3px;
+    }
+    .abi-table .t-handle-zero { color: var(--amber); font-weight: 700; }
+    .abi-table .t-handle-n    { color: var(--cyan);  font-weight: 700; }
+
+    /* ─── Inline code ────────────────────────────────────────────── */
+    :not(pre) > code {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--cyan);
+      background: var(--cyan-dim);
+      padding: 2px 6px;
+      border-radius: 3px;
+      border: 1px solid rgba(51,216,242,.15);
+    }
+
+    /* ─── Footer ─────────────────────────────────────────────────── */
+    .site-footer {
+      margin-left: var(--sidebar-w);
+      border-top: 1px solid var(--border);
+      padding: 28px 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 12px;
+      color: var(--muted);
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .site-footer a { color: var(--muted); text-decoration: none; }
+    .site-footer a:hover { color: var(--cyan); }
+
+    /* ─── Responsive ─────────────────────────────────────────────── */
+    @media (max-width: 768px) {
+      .sidebar { display: none; }
+      .content, .site-footer { margin-left: 0; padding: 28px 20px 80px; }
+      .arch-columns { grid-template-columns: 1fr; }
+      .arch-arrow { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ─── Header ──────────────────────────────────────────────── -->
+  <header class="site-header">
+    <div class="header-brand">
+      <a class="brand-logo" href="#">e<span>Centric</span></a>
+      <span class="brand-badge">SDK</span>
+    </div>
+    <div class="header-meta">
+      <span class="version-pill">v4.2.1</span>
+      <a href="https://github.com" target="_blank">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.44 9.8 8.2 11.38.6.11.82-.26.82-.58v-2.03c-3.34.73-4.04-1.61-4.04-1.61-.54-1.38-1.33-1.75-1.33-1.75-1.09-.74.08-.73.08-.73 1.2.09 1.84 1.24 1.84 1.24 1.07 1.83 2.8 1.3 3.49 1 .11-.78.42-1.3.76-1.6-2.66-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.12-.3-.54-1.52.12-3.18 0 0 1-.32 3.3 1.23a11.5 11.5 0 0 1 3-.4c1.02 0 2.04.13 3 .4 2.28-1.55 3.28-1.23 3.28-1.23.66 1.66.24 2.88.12 3.18.77.84 1.23 1.91 1.23 3.22 0 4.61-2.81 5.63-5.48 5.92.43.37.82 1.1.82 2.22v3.29c0 .32.22.7.83.58C20.57 21.8 24 17.3 24 12c0-6.63-5.37-12-12-12z"/></svg>
+        GitHub
+      </a>
+      <a href="ECENTRIC_SDK_EXTENSION_GUIDE.md" target="_blank">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        Raw .md
+      </a>
+    </div>
+  </header>
+
+  <div class="layout">
+
+    <!-- ─── Sidebar ─────────────────────────────────────────────── -->
+    <nav class="sidebar" id="sidebar">
+      <div class="nav-section-label">Overview</div>
+      <a class="nav-item active" href="#overview" onclick="setActive(this)">
+        <span class="nav-step-num">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        </span>
+        Introduction
+      </a>
+      <a class="nav-item" href="#architecture" onclick="setActive(this)">
+        <span class="nav-step-num">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        </span>
+        Architecture
+      </a>
+
+      <div class="nav-divider"></div>
+      <div class="nav-section-label">Steps</div>
+
+      <a class="nav-item" href="#step1" onclick="setActive(this)"><span class="nav-step-num">01</span>Define Events</a>
+      <a class="nav-item" href="#step2" onclick="setActive(this)"><span class="nav-step-num">02</span>SDK Interface & Class</a>
+      <a class="nav-item" href="#step3" onclick="setActive(this)"><span class="nav-step-num">03</span>Protocol Constants</a>
+      <a class="nav-item" href="#step4" onclick="setActive(this)"><span class="nav-step-num">04</span>SDK Implementation</a>
+      <a class="nav-item" href="#step5" onclick="setActive(this)"><span class="nav-step-num">05</span>SDK Factory</a>
+      <a class="nav-item" href="#step6" onclick="setActive(this)"><span class="nav-step-num">06</span>API Class (TAPIFoo)</a>
+      <a class="nav-item" href="#step7" onclick="setActive(this)"><span class="nav-step-num">07</span>API Factory</a>
+      <a class="nav-item" href="#step8" onclick="setActive(this)"><span class="nav-step-num">08</span>Register Identifiers</a>
+
+      <div class="nav-divider"></div>
+      <div class="nav-section-label">Reference</div>
+
+      <a class="nav-item" href="#full-flow" onclick="setActive(this)">
+        <span class="nav-step-num">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+        </span>
+        Full Flow
+      </a>
+      <a class="nav-item" href="#checklist" onclick="setActive(this)">
+        <span class="nav-step-num">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+        </span>
+        Checklist
+      </a>
+    </nav>
+
+    <!-- ─── Content ─────────────────────────────────────────────── -->
+    <main class="content">
+
+      <!-- Hero -->
+      <div class="doc-hero" id="overview">
+        <div class="hero-tag">Extension Guide</div>
+        <h1>eCentric SDK<br/>Extension Guide</h1>
+        <p>Guia completo para criação de novos recursos no SDK. Baseado nos padrões estabelecidos por <code>TAPIProcess</code>, <code>TAPIPlugin</code>, <code>TAPILink</code>, <code>TAPIServer</code> e <code>TAPIClient</code>.</p>
+        <div class="hero-chips">
+          <span class="chip chip-cyan">Object Pascal</span>
+          <span class="chip chip-amber">C ABI</span>
+          <span class="chip chip-green">Thread-safe</span>
+          <span class="chip chip-cyan">RTTI Routing</span>
+          <span class="chip chip-amber">Async Events</span>
+        </div>
+      </div>
+
+      <!-- Architecture -->
+      <section class="doc-section" id="architecture">
+        <div class="section-header">
+          <div class="step-badge step-badge-purple">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          </div>
+          <div class="section-title-group">
+            <h2>Arquitetura</h2>
+            <p class="section-sub">Os dois planos que se espelham: SDK e API</p>
+          </div>
+        </div>
+
+        <p>Cada recurso existe em dois planos que se espelham. O SDK é o que o desenvolvedor usa. A API é o que a DLL expõe. A comunicação entre eles é feita exclusivamente pela ABI C.</p>
+
+        <div class="arch-box">
+          <div class="arch-columns">
+            <div class="arch-col">
+              <div class="arch-col-title" style="color:var(--cyan)">SDK — ecentric.sdk.pas</div>
+              <div class="arch-row"><span class="arch-key">IECFoo</span><span class="arch-desc">interface pública</span></div>
+              <div class="arch-row"><span class="arch-key">TECFoo</span><span class="arch-desc">implementação</span></div>
+              <div class="arch-row"><span class="arch-key">ec.Foo(...)</span><span class="arch-desc">ponto de entrada</span></div>
+            </div>
+            <div class="arch-arrow">
+              <span>⇄</span>
+              <span class="arch-arrow-label">C-ABI</span>
+            </div>
+            <div class="arch-col">
+              <div class="arch-col-title" style="color:var(--amber)">API — ecentrix.core.api.pas</div>
+              <div class="arch-row"><span class="arch-key" style="color:var(--amber)">TAPIFoo</span><span class="arch-desc">classe interna da DLL</span></div>
+              <div class="arch-row"><span class="arch-key" style="color:var(--amber)">TAPIRootManager.Foo</span><span class="arch-desc">factory</span></div>
+              <div class="arch-row"><span class="arch-key" style="color:var(--amber)">Root.Foo</span><span class="arch-desc">método RTTI</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="flow-box">
+          <div class="flow-title">Communication Path</div>
+          <div class="flow-step">
+            <div class="flow-dot"></div>
+            <div class="flow-step-text"><strong style="color:var(--cyan)">SDK</strong> — <code>ec.Invoke(handle, 'Foo.Method', '{"param":"value"}')</code></div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-dot" style="background:var(--amber);box-shadow:0 0 6px var(--amber)"></div>
+            <div class="flow-step-text"><strong style="color:var(--amber)">API</strong> — <code>ec_CoreInvoke → RTTI → TAPIFoo.Method(AJs) → JSON</code></div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-dot" style="background:var(--purple);box-shadow:0 0 6px var(--purple)"></div>
+            <div class="flow-step-text"><strong style="color:var(--purple)">Async Event</strong> — <code>OnCoreEvent → GSDKObjects.TryGetValue → TECFoo.DoEvent</code></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Step 1 -->
+      <section class="doc-section" id="step1">
+        <div class="section-header">
+          <div class="step-badge step-badge-cyan">01</div>
+          <div class="section-title-group">
+            <h2>Definir os Eventos</h2>
+            <p class="section-sub">Notificações assíncronas da API para o SDK — se houver</p>
+          </div>
+        </div>
+
+        <p>Eventos são notificações assíncronas da API para o SDK. São identificados por um inteiro único na faixa reservada ao recurso.</p>
+
+        <div class="callout callout-warning">
+          <span class="callout-icon">⚡</span>
+          <div class="callout-body">Os dois arquivos devem estar sempre sincronizados. O comentário no arquivo de API indica isso explicitamente.</div>
+        </div>
+
+        <h3>Em ecentrix.core.api.pas</h3>
+        <div class="code-wrapper">
+          <div class="code-header">
+            <span class="code-lang">Pascal — API</span>
+            <button class="code-copy-btn" onclick="copyCode(this)">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              Copy
+            </button>
+          </div>
+          <pre><code class="language-pascal">{ Foo range (400..499): foo lifecycle events
+} EVT_FOO_READY     = 400;  { Foo is ready — no payload }
+  EVT_FOO_DATA      = 401;  { Data received — payload is UTF-8 text }
+  EVT_FOO_TERMINATE = 402;  { Foo terminated — payload is exit code decimal }</code></pre>
+        </div>
+
+        <h3>Em ecentric.sdk.pas</h3>
+        <div class="code-wrapper">
+          <div class="code-header">
+            <span class="code-lang">Pascal — SDK</span>
+            <button class="code-copy-btn" onclick="copyCode(this)">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              Copy
+            </button>
+          </div>
+          <pre><code class="language-pascal">{ Process range (200..299) ...
+  Foo range (400..499): foo lifecycle events
+} EVT_FOO_READY     = 400;
+  EVT_FOO_DATA      = 401;
+  EVT_FOO_TERMINATE = 402;</code></pre>
+        </div>
+      </section>
+
+      <!-- Step 2 -->
+      <section class="doc-section" id="step2">
+        <div class="section-header">
+          <div class="step-badge step-badge-cyan">02</div>
+          <div class="section-title-group">
+            <h2>Interface e Classe no SDK</h2>
+            <p class="section-sub">Callbacks, IECFoo e TECFoo</p>
+          </div>
+        </div>
+
+        <h3>2.1 Callbacks</h3>
+        <div class="code-wrapper">
+          <div class="code-header"><span class="code-lang">Pascal — SDK</span><button class="code-copy-btn" onclick="copyCode(this)"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copy</button></div>
+          <pre><code class="language-pascal">{ Callback for data received from a Foo object
+} TECOnFooData = Procedure(Const ASender: IECFoo; Const AData: String) Of Object;
+
+{ Callback for Foo termination
+} TECOnFooTerminate = Procedure(Const ASender: IECFoo; Const ACode: Integer) Of Object;</code></pre>
+        </div>
+
+        <h3>2.2 Interface pública</h3>
+        <p>Herda de <code>IECObject</code>. Expõe apenas o que o desenvolvedor precisa ver.</p>
+        <div class="code-wrapper">
+          <div class="code-header"><span class="code-lang">Pascal — SDK</span><button class="code-copy-btn" onclick="copyCode(this)"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copy</button></div>
+          <pre><code class="language-pascal">{ Typed contract for a Foo resource
+} IECFoo = Interface(IECObject)
+    ['{GUID-ÚNICO-GERADO-AQUI}']
+    Function DoSomething(Const AParam: String): Boolean;
+    Procedure SetOnData(Const ACallback: TECOnFooData);
+    Function GetOnData: TECOnFooData;
+    Procedure SetOnTerminate(Const ACallback: TECOnFooTerminate);
+    Function GetOnTerminate: TECOnFooTerminate;
+    Property OnData: TECOnFooData Read GetOnData Write SetOnData;
+    Property OnTerminate: TECOnFooTerminate Read GetOnTerminate Write SetOnTerminate;
+  End;</code></pre>
+        </div>
+
+        <h3>2.3 Classe de implementação</h3>
+        <div class="code-wrapper">
+          <div class="code-header"><span class="code-lang">Pascal — SDK</span><button class="code-copy-btn" onclick="copyCode(this)"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copy</button></div>
+          <pre><code class="language-pascal">{ Typed wrapper for a native Foo resource
+} TECFoo = Class(TECObject, IECFoo)
+  Strict Private
+    FOnData: TECOnFooData;
+    FOnTerminate: TECOnFooTerminate;
+  Protected
+    Procedure DoEvent(Const AEventID: Integer; Const AData: Pointer; Const ASize: Cardinal); Override;
+  Public
+    Function DoSomething(Const AParam: String): Boolean;
+    Procedure SetOnData(Const ACallback: TECOnFooData);
+    Function GetOnData: TECOnFooData;
+    Procedure SetOnTerminate(Const ACallback: TECOnFooTerminate);
+    Function GetOnTerminate: TECOnFooTerminate;
+    Property OnData: TECOnFooData Read GetOnData Write SetOnData;
+    Property OnTerminate: TECOnFooTerminate Read GetOnTerminate Write SetOnTerminate;
+  End;</code></pre>
+        </div>
+      </section>
+
+      <!-- Step 3 -->
+      <section class="doc-section" id="step3">
+        <div class="section-header">
+          <div class="step-badge step-badge-amber">03</div>
+          <div class="section-title-group">
+            <h2>Constantes de Protocolo</h2>
+            <p class="section-sub">Identificadores opacos da ABI — prefixo _EC_FOO_*</p>
+          </div>
+        </div>
+
+        <p>Nunca expostos na interface pública. A convenção de nomes da ABI é <code>Namespace.Método</code>.</p>
+
+        <table class="abi-table">
+          <thead>
+            <tr><th>Constante</th><th>Valor ABI</th><th>Handle</th><th>Descrição</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>_EC_ROOT_FOO</code></td><td><code>'Root.Foo'</code></td><td class="t-handle-zero">0</td><td>Factory — cria nova instância</td></tr>
+            <tr><td><code>_EC_FOO_DO</code></td><td><code>'Foo.DoSomething'</code></td><td class="t-handle-n">N</td><td>Operação na instância</td></tr>
+            <tr><td><code>_EC_FOO_CLOSE</code></td><td><code>'Foo.Close'</code></td><td class="t-handle-n">N</td><td>Fecha e libera a instância</td></tr>
+          </tbody>
+        </table>
+
+        <div class="code-wrapper">
+          <div class="code-header"><span class="code-lang">Pascal — SDK Constants</span><button class="code-copy-btn" onclick="copyCode(this)"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copy</button></div>
+          <pre><code class="language-pascal">{ Foo
+} _EC_ROOT_FOO     = 'Root.Foo';       { factory — handle = 0 }
+  _EC_FOO_DO       = 'Foo.DoSomething';
+  _EC_FOO_CLOSE    = 'Foo.Close';</code></pre>
+        </div>
+      </section>
+
+      <!-- Step 4 -->
+      <section class="doc-section" id="step4">
+        <div class="section-header">
+          <div class="step-badge step-badge-cyan">04</div>
+          <div class="section-title-group">
+            <h2>Implementar a Classe no SDK</h2>
+            <p class="section-sub">DoEvent, métodos de operação e late binding</p>
+          </div>
+        </div>
+
+        <h3>4.1 DoEvent — roteamento de eventos</h3>
+
+        <ul class="rule-list">
+          <li><code>SetString(LRaw, PAnsiChar(AData), ASize)</code> — sempre usar tamanho explícito, nunca strlen</li>
+          <li><code>UTF8ToString(LRaw)</code> — payload de texto é sempre UTF-8</li>
+          <li><code>Try..Except</code> vazio em volta do callback — nunca propagar exceções do consumidor</li>
+          <li><code>Else Inherited</code> — delegar eventos desconhecidos para a base</li>
+        </ul>
+
+        <div class="code-wrapper">
+          <div class="code-header"><span class="code-lang">Pascal — SDK DoEvent</span><button class="code-copy-btn" onclick="copyCode(this)"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copy</button></div>
+          <pre><code class="language-pascal">Procedure TECFoo.DoEvent(Const AEventID: Integer; Const AData: Pointer; Const ASize: Cardinal);
+Var
+  LData: String;
+  LCode: Integer;
+Begin
+  Case AEventID Of
+
+    EVT_FOO_DATA:
+    Begin
+      If Assigned(FOnData) And (ASize > 0) Then
+      Begin
+         Var LRaw: RawByteString;
+         SetString(LRaw, PAnsiChar(AData), ASize);
+         LData := UTF8ToString(LRaw);
+         Try
+            FOnData(Self, LData);
+         Except
+         End;
+      End;
+    End;
+
+    EVT_FOO_TERMINATE:
+    Begin
+      If Assigned(FOnTerminate) Then
+      Begin
+         If ASize > 0 Then
+         Begin
+            Var LRaw: RawByteString;
+            SetString(LRaw, PAnsiChar(AData), ASize);
+            LCode := StrToIntDef(String(LRaw), 0);
+         End
+         Else
+            LCode := 0;
+         Try
+            FOnTerminate(Self, LCode);
+         Except
+         End;
+      End;
+    End;
+
+  Else
+    Inherited DoEvent(AEventID, AData, ASize);
+  End;
+End;</code></pre>
+        </div>
+
+        <h3>4.2 Métodos de operação</h3>
+        <div class="code-wrapper">
+          <div class="code-header"><span class="code-lang">Pascal — SDK Method</span><button class="code-copy-btn" onclick="copyCode(this)"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copy</button></div>
+          <pre><code class="language-pascal">Function TECFoo.DoSomething(Const AParam: String): Boolean;
+Var
+  LRet: String;
+Begin
+  LRet := ec.Invoke(Handle, _EC_FOO_DO, JsonParam('param', AParam));
+  Result := ec.ExtractBoolean(LRet);
+End;</code></pre>
+        </div>
+
+        <h3>4.3 Late binding</h3>
+        <p>Aplicar quando eventos podem chegar durante o <code>Invoke</code> de criação — antes de o consumidor atribuir os callbacks.</p>
+        <div class="code-wrapper">
+          <div class="code-header"><span class="code-lang">Pascal — Late Binding</span><button class="code-copy-btn" onclick="copyCode(this)"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copy</button></div>
+          <pre><code class="language-pascal">Procedure TECFoo.SetOnData(Const ACallback: TECOnFooData);
+Begin
+  FOnData := ACallback;
+{ Late binding: if data arrived before the callback was assigned, deliver now
+} If Assigned(FOnData) And (Length(FPendingData) > 0) Then
+  Begin
+     For I := 0 To High(FPendingData) Do
+     Try
+        FOnData(Self, FPendingData[I]);
+     Except
+     End;
+     SetLength(FPendingData, 0);
+  End;
+End;</code></pre>
+        </div>
+      </section>
+
+      <!-- Step 5 -->
+      <section class="doc-section" id="step5">
+        <div class="section-header">
+          <div class="step-badge step-badge-cyan">05</div>
+          <div class="section-title-group">
+            <h2>Factory em TECentric</h2>
+            <p class="section-sub">AttachFoo e Foo — pontos de entrada públicos</p>
+          </div>
+        </div>
+
+        <h3>5.1 AttachFoo</h3>
+        <div class="code-wrapper">
+          <div class="code-header"><span class="code-lang">Pascal — SDK AttachFoo</span><button class="code-copy-btn" onclick="copyCode(this)"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copy</button></div>
+          <pre><code class="language-pascal">Function TECentric.AttachFoo(Const AHandle: Cardinal): IECFoo;
+Begin
+  Result := Nil;
+  If AHandle > 0 Then Begin
+     Result := TECFoo.Create(AHandle);
+     RegisterObject(AHandle, Result);
+  End;
+End;</code></pre>
+        </div>
+
+        <h3>5.2 Foo — caso simples</h3>
+        <div class="code-wrapper">
+          <div class="code-header"><span class="code-lang">Pascal — SDK Factory Simple</span><button class="code-copy-btn" onclick="copyCode(this)"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copy</button></div>
+          <pre><code class="language-pascal">Function TECentric.Foo(Const AParam: String): IECFoo;
+Var
+  LRet: String;
+  LHandle: Cardinal;
+Begin
+  Result := Nil;
+  LRet := Invoke(0, _EC_ROOT_FOO, JsonParam('param', AParam));
+  LHandle := ExtractHandle(LRet);
+  If LHandle > 0 Then Begin
+     Result := TECFoo.Create(LHandle);
+     Result.SetHandle(LHandle);
+     RegisterObject(LHandle, Result);
+  End;
+End;</code></pre>
+        </div>
+
+        <h3>5.3 Foo — com GSDKPending (eventos durante criação)</h3>
+        <div class="code-wrapper">
+          <div class="code-header"><span class="code-lang">Pascal — SDK Factory Pending</span><button class="code-copy-btn" onclick="copyCode(this)"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copy</button></div>
+          <pre><code class="language-pascal">Function TECentric.Foo(Const AParam: String): IECFoo;
+Var
+  LRet: String;
+  LHandle: Cardinal;
+  LFoo: IECFoo;
+  LThreadId: Cardinal;
+Begin
+  Result := Nil;
+  LFoo := TECFoo.Create(0);
+  LThreadId := GetCurrentThreadId;
+{ Pre-register in pending map so OnCoreEvent can buffer early events
+  that arrive during Invoke before the handle is known to the SDK.
+} TMonitor.Enter(GSDKLock);
+  Try
+     GSDKPending.AddOrSetValue(LThreadId, LFoo);
+  Finally
+     TMonitor.Exit(GSDKLock);
+  End;
+  Try
+     LRet := Invoke(0, _EC_ROOT_FOO, JsonParam('param', AParam));
+  Finally
+     TMonitor.Enter(GSDKLock);
+     Try
+        GSDKPending.Remove(LThreadId);
+     Finally
+        TMonitor.Exit(GSDKLock);
+     End;
+  End;
+  LHandle := ExtractHandle(LRet);
+  If LHandle > 0 Then Begin
+     LFoo.SetHandle(LHandle);
+     RegisterObject(LHandle, LFoo);
+     Result := LFoo;
+  End;
+End;</code></pre>
+        </div>
+      </section>
+
+      <!-- Step 6 -->
+      <section class="doc-section" id="step6">
+        <div class="section-header">
+          <div class="step-badge step-badge-amber">06</div>
+          <div class="section-title-group">
+            <h2>Criar TAPIFoo na API</h2>
+            <p class="section-sub">Declaração, InjectInterface, dispatchers, Close e Destructor</p>
+          </div>
+        </div>
+
+        <div class="callout callout-rule">
+          <span class="callout-icon">📌</span>
+          <div class="callout-body"><strong>Regra:</strong> apenas métodos <code>Published</code> são visíveis pelo RTTI e chamáveis pela ABI. Métodos <code>Public</code> são infraestrutura interna.</div>
+        </div>
+
+        <h3>6.1 Declaração da classe</h3>
+        <div class="code-wrapper">
+          <div class="code-header"><span class="code-lang">Pascal — API Class</span><button class="code-copy-btn" onclick="copyCode(this)"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copy</button></div>
+          <pre><code class="language-pascal">{ Foo resource — wraps IECFoo over the TAPIObject infrastructure
+} TAPIFoo = Class(TAPIObject)
+  Strict Private
+    FFoo: IECFoo;             { Core interface — Nil until InjectInterface }
+    FClosedFlag: Integer;     { Atomic idempotency flag for Close }
+    Procedure DoData(Const AData: String);
+    Procedure DoTerminate(Const ACode: Cardinal);
+  Public
+    Procedure InjectInterface(Const AFoo: IECFoo);
+    Destructor Destroy; Override;
+  Published
+    Function DoSomething(Const AJs: AnsiString): AnsiString;
+    Function Close(Const AJs: AnsiString): AnsiString;
+  End;</code></pre>
+        </div>
+
+        <h3>6.2 InjectInterface</h3>
+        <div class="code-wrapper">
+          <div class="code-header"><span class="code-lang">Pascal — API InjectInterface</span><button class="code-copy-btn" onclick="copyCode(this)"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copy</button></div>
+          <pre><code class="language-pascal">Procedure TAPIFoo.InjectInterface(Const AFoo: IECFoo);
+Begin
+  FFoo := AFoo;
+  FClosedFlag := 0;
+  If FFoo <> Nil Then Begin
+     FFoo.OnData :=
+        Procedure(Const AData: String)
+        Begin
+           DoData(AData);
+        End;
+     FFoo.OnTerminate :=
+        Procedure(Const ACode: Cardinal)
+        Begin
+           DoTerminate(ACode);
+        End;
+  End;
+End;</code></pre>
+        </div>
+
+        <h3>6.3 Dispatchers de evento</h3>
+        <ul class="rule-list">
+          <li>Capturar <code>Self.Handle</code> em variável local antes de qualquer operação</li>
+          <li>Checar <code>LHandle = 0</code> antes de despachar</li>
+          <li>Payload texto: serializar como <code>UTF8String</code></li>
+          <li>Payload numérico: serializar como <code>AnsiString(IntToStr(...))</code></li>
+          <li>Payload ausente: passar <code>Nil, 0</code></li>
+          <li>Sempre <code>Try..Except</code> vazio em volta do dispatch</li>
+        </ul>
+        <div class="code-wrapper">
+          <div class="code-header"><span class="code-lang">Pascal — API Dispatchers</span><button class="code-copy-btn" onclick="copyCode(this)"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copy</button></div>
+          <pre><code class="language-pascal">Procedure TAPIFoo.DoData(Const AData: String);
+Var
+  LHandle: Cardinal;
+  LPayload: UTF8String;
+Begin
+  If IsShuttingDown Or (GAPIObjects = Nil) Then Exit;
+  LHandle := Self.Handle;
+  If LHandle = 0 Then Exit;
+  LPayload := UTF8String(AData);
+  Try
+     DispatchCoreEvent(LHandle, EVT_FOO_DATA, Pointer(LPayload), Length(LPayload));
+  Except
+  End;
+End;
+
+Procedure TAPIFoo.DoTerminate(Const ACode: Cardinal);
+Var
+  LHandle: Cardinal;
+  LCode: AnsiString;
+Begin
+  If IsShuttingDown Or (GAPIObjects = Nil) Then Exit;
+  LHandle := Self.Handle;
+  If LHandle = 0 Then Exit;
+  LCode := AnsiString(IntToStr(ACode));
+  Try
+     DispatchCoreEvent(LHandle, EVT_FOO_TERMINATE, Pointer(LCode), Length(LCode));
+  Except
+  End;
+End;</code></pre>
+        </div>
+
+        <h3>6.4 Métodos Published</h3>
+        <div class="code-wrapper">
+          <div class="code-header"><span class="code-lang">Pascal — API Published Method</span><button class="code-copy-btn" onclick="copyCode(this)"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copy</button></div>
+          <pre><code class="language-pascal">Function TAPIFoo.DoSomething(Const AJs: AnsiString): AnsiString;
+Var
+  LParams: IECJSon;
+  LParam: String;
+Begin
+  If FFoo = Nil Then
+     Exit(ErrorStr('DoSomething failed', 'Foo interface is missing'));
+  LParams := ec.JSon.Factory(AJs);
+  If LParams = Nil Then
+     Exit(ErrorStr('Invalid JSON payload'));
+  LParam := LParams.S['param'];
+  Try
+     If FFoo.DoSomething(LParam) Then
+        Result := JsonValue(True) Else
+        Result := ErrorStr('DoSomething failed');
+  Except
+     On E: Exception Do
+        Result := ErrorStr('DoSomething exception', E.Message);
+  End;
+End;</code></pre>
+        </div>
+
+        <h3>6.5 Close — padrão obrigatório (5 passos)</h3>
+        <div class="callout callout-danger">
+          <span class="callout-icon">🔥</span>
+          <div class="callout-body"><strong>POINT OF NO RETURN:</strong> <code>DelObject</code> pode destruir <code>Self</code>. Nada após essa linha pode tocar <code>Self</code>, <code>FHandle</code>, <code>FFoo</code> ou qualquer campo de instância.</div>
+        </div>
+
+        <div class="steps-numbered">
+          <div class="step-item">
+            <div class="step-item-body"><strong>Atomic idempotency</strong> — only the first thread to swap <code>0 → 1</code> proceeds.<br><code>If AtomicCmpExchange(FClosedFlag, 1, 0) &lt;&gt; 0 Then Exit(StatsStr('Closed'));</code></div>
+          </div>
+          <div class="step-item">
+            <div class="step-item-body"><strong>Capture handle immediately</strong> before any destructive action.<br><code>LHandle := Self.Handle;</code></div>
+          </div>
+          <div class="step-item">
+            <div class="step-item-body"><strong>Release internal interface</strong> — Self still alive here.<br><code>If FFoo &lt;&gt; Nil Then Try FFoo.Close; Except End;</code></div>
+          </div>
+          <div class="step-item">
+            <div class="step-item-body"><strong>Build response</strong> before map removal.<br><code>Result := StatsStr('Closed');</code></div>
+          </div>
+          <div class="step-item step-item-danger">
+            <div class="step-item-body"><strong>POINT OF NO RETURN</strong> — <code>DelObject</code> may destroy Self. No field access beyond this line.<br><code>DelObject(LHandle);</code></div>
+          </div>
+        </div>
+
+        <div class="code-wrapper">
+          <div class="code-header"><span class="code-lang">Pascal — API Close</span><button class="code-copy-btn" onclick="copyCode(this)"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copy</button></div>
+          <pre><code class="language-pascal">Function TAPIFoo.Close(Const AJs: AnsiString): AnsiString;
+Var
+  LHandle: Cardinal;
+Begin
+{ 1. Atomic idempotency: only the first thread to swap 0 -> 1 proceeds
+} If AtomicCmpExchange(FClosedFlag, 1, 0) <> 0 Then
+     Exit(StatsStr('Closed'));
+{ 2. Immediate handle capture before any destructive action
+} LHandle := Self.Handle;
+{ 3. Internal interface release (Self still alive here)
+} If FFoo <> Nil Then Try
+     FFoo.Close;
+  Except
+  End;
+{ 4. Build response before map removal
+} Result := StatsStr('Closed');
+{ 5. POINT OF NO RETURN: DelObject may destroy Self. Nothing after this line
+  may touch Self, FHandle, FFoo or any instance field.
+} DelObject(LHandle);
+End;</code></pre>
+        </div>
+
+        <h3>6.6 Destructor</h3>
+        <div class="code-wrapper">
+          <div class="code-header"><span class="code-lang">Pascal — API Destructor</span><button class="code-copy-btn" onclick="copyCode(this)"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copy</button></div>
+          <pre><code class="language-pascal">Destructor TAPIFoo.Destroy;
+Begin
+{ External close: idempotent via FClosedFlag — only runs if Close was not
+  called explicitly by the ABI.
+} If (AtomicCmpExchange(FClosedFlag, 1, 0) = 0) And (FFoo <> Nil) Then Try
+     FFoo.Close;
+  Except
+  End;
+{ Interface release always occurs in the destructor (Delphi side).
+  Dereference is internally protected and tolerates Iface = Nil.
+} Dereference(FFoo);
+  Inherited;
+End;</code></pre>
+        </div>
+      </section>
+
+      <!-- Step 7 -->
+      <section class="doc-section" id="step7">
+        <div class="section-header">
+          <div class="step-badge step-badge-amber">07</div>
+          <div class="section-title-group">
+            <h2>Factory na API</h2>
+            <p class="section-sub">TAPIRootManager.Foo — declaração e implementação</p>
+          </div>
+        </div>
+
+        <div class="code-wrapper">
+          <div class="code-header"><span class="code-lang">Pascal — API RootManager</span><button class="code-copy-btn" onclick="copyCode(this)"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copy</button></div>
+          <pre><code class="language-pascal">Function TAPIRootManager.Foo(Const AJs: AnsiString): AnsiString;
+Var
+  LParams: IECJSon;
+  LParam: String;
+  LFooInf: IECFoo;
+  LObj: TAPIFoo;
+  LHandle: Cardinal;
+Begin
+  LParams := ec.JSon.Factory(AJs);
+  If LParams = Nil Then
+     Exit(ErrorStr('Invalid JSON payload'));
+  LParam := LParams.S['param'];
+  LFooInf := ec.Foo.Create(LParam);
+  If LFooInf = Nil Then
+     Exit(ErrorStr('Foo creation failed'));
+  LObj := TAPIFoo.Create;
+  LHandle := 0;
+  Try
+     LObj.InjectInterface(LFooInf);
+     LHandle := MapObject(LObj);
+     Result := JsonHandle(LHandle, 'foo');
+  Except
+     On E: Exception Do Begin
+        If LHandle > 0 Then
+           DelObject(LHandle);
+        Result := ErrorStr('Foo creation exception', E.Message);
+     End;
+  End;
+End;</code></pre>
+        </div>
+      </section>
+
+      <!-- Step 8 -->
+      <section class="doc-section" id="step8">
+        <div class="section-header">
+          <div class="step-badge step-badge-green">08</div>
+          <div class="section-title-group">
+            <h2>Registrar Identificadores</h2>
+            <p class="section-sub">Convenção de nomes da ABI</p>
+          </div>
+        </div>
+
+        <table class="abi-table">
+          <thead>
+            <tr><th>Namespace</th><th>Handle</th><th>Destino</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>Root.*</code></td><td class="t-handle-zero">0</td><td>Chamadas ao <code>TAPIRootManager</code></td></tr>
+            <tr><td><code>Foo.*</code></td><td class="t-handle-n">N</td><td>Chamadas ao <code>TAPIFoo</code></td></tr>
+          </tbody>
+        </table>
+
+        <div class="callout callout-info">
+          <span class="callout-icon">ℹ️</span>
+          <div class="callout-body">O namespace é ignorado pelo roteador — apenas o método importa para o RTTI.</div>
+        </div>
+
+        <div class="code-wrapper">
+          <div class="code-header"><span class="code-lang">Pascal — SDK Protocol IDs</span><button class="code-copy-btn" onclick="copyCode(this)"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copy</button></div>
+          <pre><code class="language-pascal">{ Root
+} _EC_ROOT_FOO   = 'Root.Foo';
+
+{ Foo
+} _EC_FOO_DO     = 'Foo.DoSomething';</code></pre>
+        </div>
+      </section>
+
+      <!-- Full Flow -->
+      <section class="doc-section" id="full-flow">
+        <div class="section-header">
+          <div class="step-badge step-badge-purple">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+          </div>
+          <div class="section-title-group">
+            <h2>Resumo do Fluxo Completo</h2>
+            <p class="section-sub">De ec.Foo() ao callback do consumidor</p>
+          </div>
+        </div>
+
+        <div class="terminal-box">
+          <div class="terminal-header">
+            <div class="terminal-dot"></div>
+            <div class="terminal-dot"></div>
+            <div class="terminal-dot"></div>
+            <span class="terminal-title">eCentric SDK — Full Call & Event Flow</span>
+          </div>
+          <div class="terminal-body">
+<span class="t-comment">// ── Desenvolvedor ──────────────────────────────────────────</span>
+<span class="t-sdk">LFoo</span> := <span class="t-sdk">ec.Foo</span>(<span class="t-sdk">'param'</span>);
+<span class="t-sdk">LFoo.OnData</span> := <span class="t-sdk">MeuHandler</span>;
+<span class="t-sdk">LFoo.DoSomething</span>(<span class="t-sdk">'valor'</span>);
+
+<span class="t-comment">// ── SDK: ec.Foo() ───────────────────────────────────────────</span>
+<span class="t-sdk">Invoke</span>(0, <span class="t-sdk">'Root.Foo'</span>, <span class="t-sdk">'{"param":"param"}'</span>)
+<t-indent class="t-arrow">  →  </t-indent><span class="t-api">TAPIRootManager.Foo</span>:
+<t-indent class="t-arrow">       </t-indent><span class="t-core">ec.Core.CreateFoo</span>(<span class="t-sdk">'param'</span>) <span class="t-arrow">→</span> IECFooCore
+<t-indent class="t-arrow">       </t-indent><span class="t-api">TAPIFoo.InjectInterface</span>(IECFooCore)
+<t-indent class="t-arrow">       </t-indent><span class="t-api">MapObject</span> <span class="t-arrow">→</span> handle = N
+<t-indent class="t-arrow">       </t-indent>return <span class="t-sdk">'{"handle":N,"type":"foo"}'</span>
+<span class="t-sdk">ExtractHandle</span> <span class="t-arrow">→</span> N
+<span class="t-sdk">TECFoo.Create</span>(N) <span class="t-arrow">→</span> <span class="t-sdk">RegisterObject</span>(N, obj)
+return <span class="t-sdk">IECFoo</span>
+
+<span class="t-comment">// ── SDK: LFoo.DoSomething() ─────────────────────────────────</span>
+<span class="t-sdk">Invoke</span>(N, <span class="t-sdk">'Foo.DoSomething'</span>, <span class="t-sdk">'{"param":"valor"}'</span>)
+<t-indent class="t-arrow">  →  </t-indent><span class="t-api">TAPIFoo.DoSomething</span>:
+<t-indent class="t-arrow">       </t-indent><span class="t-api">FFoo.DoSomething</span>(<span class="t-sdk">'valor'</span>)
+<t-indent class="t-arrow">       </t-indent>return <span class="t-sdk">'{"value":true}'</span>
+<span class="t-sdk">ExtractBoolean</span> <span class="t-arrow">→</span> True
+
+<span class="t-comment">// ── Core: evento assíncrono ─────────────────────────────────</span>
+<span class="t-core">IECFooCore.OnData</span>
+<t-indent class="t-arrow">  →  </t-indent><span class="t-api">TAPIFoo.DoData</span>
+<t-indent class="t-arrow">  →  </t-indent><span class="t-api">DispatchCoreEvent</span>(N, EVT_FOO_DATA, ...)
+<t-indent class="t-arrow">  →  </t-indent><span class="t-event">OnCoreEvent</span>
+<t-indent class="t-arrow">  →  </t-indent><span class="t-sdk">GSDKObjects</span>[N].<span class="t-sdk">DoEvent</span>
+<t-indent class="t-arrow">  →  </t-indent><span class="t-sdk">TECFoo.DoEvent</span> <span class="t-arrow">→</span> <span class="t-sdk">FOnData</span>(Self, AData)
+<t-indent class="t-arrow">  →  </t-indent><span class="t-sdk">MeuHandler</span>(LFoo, AData) <span class="t-comment">✓</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Checklist -->
+      <section class="doc-section" id="checklist">
+        <div class="section-header">
+          <div class="step-badge step-badge-green">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+          </div>
+          <div class="section-title-group">
+            <h2>Checklist para Novos Recursos</h2>
+            <p class="section-sub">Clique para marcar cada item como concluído</p>
+          </div>
+        </div>
+
+        <div class="checklist" id="checklist-items">
+          <div class="check-item" onclick="toggleCheck(this)">
+            <div class="check-box"></div>
+            <div class="check-label">Faixa de eventos definida e documentada nos dois arquivos</div>
+          </div>
+          <div class="check-item" onclick="toggleCheck(this)">
+            <div class="check-box"></div>
+            <div class="check-label"><code>IECFoo</code> com GUID único gerado</div>
+          </div>
+          <div class="check-item" onclick="toggleCheck(this)">
+            <div class="check-box"></div>
+            <div class="check-label"><code>TECFoo.DoEvent</code> com <code>SetString + UTF8ToString</code>, <code>Try..Except</code> vazio, <code>Else Inherited</code></div>
+          </div>
+          <div class="check-item" onclick="toggleCheck(this)">
+            <div class="check-box"></div>
+            <div class="check-label">Late binding implementado se eventos podem chegar durante criação</div>
+          </div>
+          <div class="check-item" onclick="toggleCheck(this)">
+            <div class="check-box"></div>
+            <div class="check-label"><code>_EC_ROOT_FOO</code> e <code>_EC_FOO_*</code> declarados em <code>ecentric.sdk.pas</code></div>
+          </div>
+          <div class="check-item" onclick="toggleCheck(this)">
+            <div class="check-box"></div>
+            <div class="check-label"><code>TAPIFoo</code> com <code>FClosedFlag: Integer</code> e padrão <code>Close</code> de 5 passos</div>
+          </div>
+          <div class="check-item" onclick="toggleCheck(this)">
+            <div class="check-box"></div>
+            <div class="check-label"><code>TAPIFoo.Destructor</code> com <code>AtomicCmpExchange</code> + <code>Dereference</code></div>
+          </div>
+          <div class="check-item" onclick="toggleCheck(this)">
+            <div class="check-box"></div>
+            <div class="check-label">Dispatchers capturam handle local antes de despachar</div>
+          </div>
+          <div class="check-item" onclick="toggleCheck(this)">
+            <div class="check-box"></div>
+            <div class="check-label"><code>TAPIRootManager.Foo</code> declarado como <code>Published</code></div>
+          </div>
+          <div class="check-item" onclick="toggleCheck(this)">
+            <div class="check-box"></div>
+            <div class="check-label"><code>TECentric.Foo</code> e <code>AttachFoo</code> declarados e implementados</div>
+          </div>
+          <div class="check-item" onclick="toggleCheck(this)">
+            <div class="check-box"></div>
+            <div class="check-label"><code>JsonHandle(LHandle, 'foo')</code> no retorno do factory da API</div>
+          </div>
+          <div class="check-item" onclick="toggleCheck(this)">
+            <div class="check-box"></div>
+            <div class="check-label">Encoding: payload texto sempre <code>UTF8String</code> na API, <code>UTF8ToString</code> no SDK</div>
+          </div>
+        </div>
+
+        <div id="checklist-progress" style="margin-top:16px;display:flex;align-items:center;gap:12px;">
+          <div style="flex:1;height:4px;background:rgba(255,255,255,.06);border-radius:2px;overflow:hidden;">
+            <div id="progress-bar" style="height:100%;width:0%;background:var(--green);border-radius:2px;transition:width .3s ease;box-shadow:0 0 8px var(--green);"></div>
+          </div>
+          <span id="progress-text" style="font-family:var(--font-mono);font-size:11px;color:var(--muted);white-space:nowrap;">0 / 12</span>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div>© 2024 eCentric Engineering. All rights reserved.</div>
+    <div style="display:flex;gap:20px;">
+      <a href="ECENTRIC_SDK_EXTENSION_GUIDE.md">Source (.md)</a>
+      <a href="https://github.com" target="_blank">GitHub</a>
+    </div>
+    <div style="font-family:var(--font-mono);font-size:10px;">v4.2.1 · Object Pascal · C-ABI</div>
+  </footer>
+
+  <!-- Prism.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-pascal.min.js"></script>
+
+  <script>
+    // ─── Sidebar active state ──────────────────────────────────────
+    function setActive(el) {
+      document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+      el.classList.add('active');
+    }
+
+    // Intersection Observer for auto-highlight
+    const sections = document.querySelectorAll('.doc-section, .doc-hero');
+    const navItems = document.querySelectorAll('.nav-item');
+
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const id = entry.target.id;
+          navItems.forEach(item => {
+            item.classList.toggle('active', item.getAttribute('href') === '#' + id);
+          });
+        }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px', threshold: 0 });
+
+    sections.forEach(s => observer.observe(s));
+
+    // ─── Copy code ────────────────────────────────────────────────
+    function copyCode(btn) {
+      const pre = btn.closest('.code-wrapper').querySelector('pre code');
+      navigator.clipboard.writeText(pre.textContent).then(() => {
+        btn.innerHTML = '<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
+        btn.classList.add('copied');
+        setTimeout(() => {
+          btn.innerHTML = '<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy';
+          btn.classList.remove('copied');
+        }, 2000);
+      });
+    }
+
+    // ─── Interactive checklist ─────────────────────────────────────
+    const TOTAL = 12;
+
+    function toggleCheck(item) {
+      const box = item.querySelector('.check-box');
+      const isChecked = box.classList.toggle('checked');
+      item.classList.toggle('checked-row', isChecked);
+      updateProgress();
+      saveChecklist();
+    }
+
+    function updateProgress() {
+      const checked = document.querySelectorAll('.check-box.checked').length;
+      const pct = (checked / TOTAL) * 100;
+      document.getElementById('progress-bar').style.width = pct + '%';
+      document.getElementById('progress-text').textContent = checked + ' / ' + TOTAL;
+      if (checked === TOTAL) {
+        document.getElementById('progress-bar').style.background = 'var(--green)';
+        document.getElementById('progress-bar').style.boxShadow = '0 0 12px var(--green)';
+      }
+    }
+
+    function saveChecklist() {
+      const states = [...document.querySelectorAll('.check-box')].map(b => b.classList.contains('checked'));
+      localStorage.setItem('ecentric_checklist', JSON.stringify(states));
+    }
+
+    function loadChecklist() {
+      try {
+        const saved = JSON.parse(localStorage.getItem('ecentric_checklist') || '[]');
+        document.querySelectorAll('.check-item').forEach((item, i) => {
+          if (saved[i]) {
+            item.querySelector('.check-box').classList.add('checked');
+            item.classList.add('checked-row');
+          }
+        });
+        updateProgress();
+      } catch {}
+    }
+
+    loadChecklist();
+
+    // ─── Re-run Prism after load ──────────────────────────────────
+    document.addEventListener('DOMContentLoaded', () => {
+      if (window.Prism) Prism.highlightAll();
+    });
+  </script>
+</body>
+</html>
